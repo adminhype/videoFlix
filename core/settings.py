@@ -185,6 +185,9 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST_USER = 'support@videoflix.com'
+
 UNFOLD = {
     "SITE_TITLE": "AdminFlix",
     "SITE_HEADER": "VideoFlix",
