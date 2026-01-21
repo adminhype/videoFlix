@@ -8,8 +8,8 @@ User = get_user_model()
 
 @pytest.mark.django_db
 def test_register_user_successfully(api_client):
-
     url = reverse('register')
+
     data = {
         "email": "apiuser@example.com",
         "password": "apiuserpassword",
@@ -27,6 +27,7 @@ def test_register_user_successfully(api_client):
 @pytest.mark.django_db
 def test_register_password_mismatch(api_client):
     url = reverse('register')
+
     data = {
         "email": "failuser@example.com",
         "password": "password123",
@@ -39,15 +40,15 @@ def test_register_password_mismatch(api_client):
 
 
 @pytest.mark.django_db
-def test_register_duplicate_email(api_client):
-    User.objects.create_user(username="dup", email="duplicate@example.com", password="password123")
+def test_register_duplicate_email(api_client, user, test_password):
     url = reverse('register')
+
     data = {
-        "email": "duplicate@example.com",
-        "password": "password123",
-        "confirmed_password": "password123"
+        "email": user.email,
+        "password": test_password,
+        "confirmed_password": test_password
     }
     response = api_client.post(url, data)
 
     assert response.status_code == 400
-    assert User.objects.count() == 1
+    assert User.objects.filter(email=user.email).count() == 1
