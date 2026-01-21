@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     'video_app',
 ]
 
+AUTH_USER_MODEL = 'flix_auth_app.CustomUser'
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
