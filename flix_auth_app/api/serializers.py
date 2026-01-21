@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from django.contrib.auth import get_user_model
 
@@ -29,3 +30,17 @@ class RegisterSerializer(serializers.ModelSerializer):
             is_active=False
         )
         return user
+
+
+class LoginSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        data.update({
+            "detail": "Login successful",
+            "user": {
+                "id": self.user.id,
+                "email": self.user.email
+            }
+        })
+        return data
