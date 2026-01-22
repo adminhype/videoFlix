@@ -1,3 +1,4 @@
+import token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -12,9 +13,9 @@ from django.contrib.auth import get_user_model
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 
-from .serializers import LoginSerializer, RegisterSerializer
+from .serializers import LoginSerializer, PasswordResetConfirmSerializer, RegisterSerializer
 from .utils import set_token_cookies, clear_token_cookies
-from flix_auth_app.tasks import send_activation_email
+from flix_auth_app.tasks import send_activation_email, send_password_reset_email
 
 User = get_user_model()
 
@@ -107,3 +108,38 @@ class CustomTokenRefreshView(TokenRefreshView):
 
         except (InvalidToken, TokenError):
             return Response({"detail": "Invalid refresh token"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def password_reset_request(request):
+    email = request.data.get("email")
+    try:
+        user = User.objects.get(email=email)
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        send_password_reset_email.delay(email, uid, token)
+    except User.DoesNotExist:
+        pass
+
+    return Response({"detail": "An email has been sent to reset your password."}, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def password_reset_confirm(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+
+        if not default_token_generator.check_token(user, token):
+            return Response({"detail": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+        if serializer.is_valid():
+            user.set_password(serializer.validated_data["new_password"])
+            user.save()
+            return Response({"detail": "Your Password has been successfully reset."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        return Response({"detail": "Invalid link."}, status=status.HTTP_400_BAD_REQUEST)

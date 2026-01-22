@@ -16,3 +16,18 @@ def send_activation_email(email, uid, token):
         [email],
         fail_silently=False,
     )
+
+
+@job
+def send_password_reset_email(email, uid, token):
+    subject = "Reset your Password"
+    reset_link = f"http://127.0.0.1:5500/pages/auth/confirm_password.html?uid={uid}&token={token}"
+    message = f"Moin, please click the link to reset your password: {reset_link}"
+
+    send_mail(
+        subject,
+        message,
+        settings.EMAIL_HOST_USER,
+        [email],
+        fail_silently=False,
+    )
