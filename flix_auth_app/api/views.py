@@ -2,6 +2,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from django.contrib.auth.tokens import default_token_generator
@@ -10,7 +12,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 
 from .serializers import LoginSerializer, RegisterSerializer
-from .utils import set_token_cookies
+from .utils import set_token_cookies, clear_token_cookies
 from flix_auth_app.tasks import send_activation_email
 
 User = get_user_model()
@@ -61,3 +63,25 @@ class LoginView(TokenObtainPairView):
 
             set_token_cookies(response, access_token, refresh_token)
         return response
+
+
+class LogoutView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        refresh_token = request.COOKIES.get("refresh_token")
+
+        if not refresh_token:
+            return Response({"detail": "Refresh token required."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            response = Response(
+                {"detail": "Logout successful! All tokens will be deleted. Refresh token ist now invalid."},
+                status=status.HTTP_200_OK
+            )
+            return clear_token_cookies(response)
+
+        except (Exception):
+            return Response({"detail": "bad request"}, status=status.HTTP_400_BAD_REQUEST)

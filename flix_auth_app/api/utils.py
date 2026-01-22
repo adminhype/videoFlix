@@ -20,3 +20,9 @@ def set_token_cookies(response, access_token, refresh_token):
         **cookie_params
     )
     return response
+
+
+def clear_token_cookies(response):
+    response.delete_cookie("access_token")
+    response.delete_cookie("refresh_token")
+    return response
