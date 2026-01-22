@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import get_user_model
@@ -85,3 +86,24 @@ class LogoutView(APIView):
 
         except (Exception):
             return Response({"detail": "bad request"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomTokenRefreshView(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.COOKIES.get("refresh_token")
+
+        if not refresh_token:
+            return Response({"detail": "Refresh token required"}, status=status.HTTP_400_BAD_REQUEST)
+        request.data["refresh"] = refresh_token
+
+        try:
+            response = super().post(request, *args, **kwargs)
+
+            if response.status_code == status.HTTP_200_OK:
+                access_token = response.data.get("access")
+                set_token_cookies(response, access_token, refresh_token)
+                response.data["detail"] = "Token refreshed"
+            return response
+
+        except (InvalidToken, TokenError):
+            return Response({"detail": "Invalid refresh token"}, status=status.HTTP_401_UNAUTHORIZED)
