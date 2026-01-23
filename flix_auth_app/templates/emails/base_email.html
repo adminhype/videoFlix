@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      {% block subject %}
+        Videoflix Notification
+      {% endblock %}
+    </title>
+    {% include "emails/styles.css" %}
+  </head>
+
+  {% comment %}replace text with logo later{% endcomment %}
+  <body>
+    <div class="container">
+      <div class="logo-header">
+        <h1 class="logo-text">Videoflix</h1>
+      </div>
+
+      {% block content %}
+
+      {% endblock %}
+  {% comment %} maybe contact info {% endcomment %}
+      <div class="footer">
+        <p class="copyrights">&copy; 2026 dev@ademoencue.de</p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+{% extends 'emails/base_email.html' %}
+
+{% block subject %}
+  Activate your Account
+{% endblock %}
+
+{% block content %}
+  <h2>Welcome to Videoflix!</h2>
+
+  <p class="greeting">Moin {{ username }},</p>
+  <p>Thank you for registering. To complete your registration and verify your email address, please click the button below:</p>
+
+  <div class="button-container">
+    <a href="{{ link }}" class="btn">Activate Account</a>
+  </div>
+
+  <p>If you did not create an account with us, please disregard this email.</p>
+{% endblock %}

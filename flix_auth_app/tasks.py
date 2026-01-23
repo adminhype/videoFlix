@@ -1,33 +1,46 @@
-from django.core.mail import send_mail
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
 from django_rq import job
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string
 
 
 @job
 def send_activation_email(email, uid, token):
-    subject = "Activate your VideoFlix account"
+    subject = "Confirm your email"
     activation_link = f"http://127.0.0.1:5500/pages/auth/activate.html?uid={uid}&token={token}"
-    message = f"Moin, please click the link to activate your account: {activation_link}"
+    context = {
+        "link": activation_link,
+        "username": email.split("@")[0]
+    }
+    html_content = render_to_string("emails/activation_email.html", context)
+    text_content = strip_tags(html_content)
 
-    send_mail(
+    email_msg = EmailMultiAlternatives(
         subject,
-        message,
+        text_content,
         settings.EMAIL_HOST_USER,
         [email],
-        fail_silently=False,
     )
+    email_msg.attach_alternative(html_content, "text/html")
+    email_msg.send()
 
 
 @job
 def send_password_reset_email(email, uid, token):
     subject = "Reset your Password"
     reset_link = f"http://127.0.0.1:5500/pages/auth/confirm_password.html?uid={uid}&token={token}"
-    message = f"Moin, please click the link to reset your password: {reset_link}"
+    context = {
+        "link": reset_link,
+    }
+    html_content = render_to_string("emails/password_reset_email.html", context)
+    text_content = strip_tags(html_content)
 
-    send_mail(
+    email_msg = EmailMultiAlternatives(
         subject,
-        message,
+        text_content,
         settings.EMAIL_HOST_USER,
         [email],
-        fail_silently=False,
     )
+    email_msg.attach_alternative(html_content, "text/html")
+    email_msg.send()
