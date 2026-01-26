@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_rq',
     'flix_auth_app',
-    'video_app',
+    'video_app.apps.VideoAppConfig',
 ]
 
 AUTH_USER_MODEL = 'flix_auth_app.CustomUser'

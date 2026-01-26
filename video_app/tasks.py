@@ -1,10 +1,10 @@
 import os
-import subprocess
 
 from django.conf import settings
 from django_rq import job
 
 from .models import Video
+from video_app.api.services import convert_resolution
 
 
 @job
@@ -26,27 +26,3 @@ def convert_to_hls(video_id, source_path):
     video.has_1080p = True
 
     video.save()
-
-
-def convert_resolution(source, base_dir, resu_name, scale, bitrate):
-    output_dir = os.path.join(base_dir, resu_name)
-    os.makedirs(output_dir, exist_ok=True)
-
-    output_file = os.path.join(output_dir, "index.m3u8")
-
-    cmd = [
-        'ffmpeg',
-        '-i', source,
-        '-vf', f'scale={scale}',
-        '-c:v', 'libx264',
-        '-b:v', bitrate,
-        '-preset', 'fast',
-        '-c:a', 'aac',
-        '-b:a', '128k',
-        '-start_number', '0',
-        '-hls_time', '10',
-        '-hls_list_size', '0',
-        '-f', 'hls', output_file
-    ]
-
-    subprocess.run(cmd, check=True)
