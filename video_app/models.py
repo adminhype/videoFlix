@@ -12,7 +12,7 @@ class Video(models.Model):
         SCI_FI = "Sci-Fi", _("Sci-Fi")
         ROMANCE = "romance", _("Romance")
 
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=112)
     description = models.TextField(blank=True, null=True)
     video_file = models.FileField(upload_to="videos/", blank=True, null=True)
