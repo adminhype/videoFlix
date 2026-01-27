@@ -10,6 +10,7 @@ from .utils import get_hls_file_path
 
 
 class VideoListView(ListAPIView):
+    """Returns a list of all videos ordered by creation date."""
     serializer_class = VideoSerializer
     permission_classes = [IsAuthenticated]
 
@@ -18,6 +19,7 @@ class VideoListView(ListAPIView):
 
 
 class VideoHLSPlaylistView(APIView):
+    """Serves the HLS playlist file (.m3u8) for a specific video resolution."""
     permission_classes = [IsAuthenticated]
 
     def get(self, request, video_id, resolution):
@@ -26,6 +28,7 @@ class VideoHLSPlaylistView(APIView):
 
 
 class VideoHLSSegementView(APIView):
+    """Serves a binary HLS video segment (.ts)"""
     permission_classes = [IsAuthenticated]
 
     def get(self, request, video_id, resolution, segment):

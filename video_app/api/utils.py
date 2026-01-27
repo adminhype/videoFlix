@@ -5,6 +5,7 @@ from django.http import Http404
 
 
 def get_hls_file_path(video_id, resolution, filename):
+    """Resolves the file path for a specific HLS segment or playlist"""
     if resolution not in ["480p", "720p", "1080p"]:
         raise Http404("Resolution not supported")
 

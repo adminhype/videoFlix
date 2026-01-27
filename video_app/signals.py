@@ -11,12 +11,18 @@ from .tasks import convert_to_hls
 
 @receiver(post_save, sender=Video)
 def video_post_save(sender, instance, created, **kwargs):
+    """
+    Triggers the HLS conversion task when a new video is uploaded.
+    """
     if created and instance.video_file:
         convert_to_hls.delay(instance.id, instance.video_file.path)
 
 
 @receiver(post_delete, sender=Video)
 def video_post_delete(sender, instance, **kwargs):
+    """
+    Deletes the raw video file and the generated HLS directory when a video is deleted.
+    """
     if instance.video_file and os.path.isfile(instance.video_file.path):
         os.remove(instance.video_file.path)
 

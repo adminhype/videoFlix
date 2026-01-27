@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 
 @job
 def send_activation_email(email, uid, token):
+    """Sends an email containing the account activation link to the user."""
     subject = "Confirm your email"
     activation_link = f"http://127.0.0.1:5500/pages/auth/activate.html?uid={uid}&token={token}"
     context = {
@@ -28,6 +29,7 @@ def send_activation_email(email, uid, token):
 
 @job
 def send_password_reset_email(email, uid, token):
+    """Sends an email containing the password reset link to the user."""
     subject = "Reset your Password"
     reset_link = f"http://127.0.0.1:5500/pages/auth/confirm_password.html?uid={uid}&token={token}"
     context = {

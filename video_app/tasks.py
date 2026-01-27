@@ -9,6 +9,7 @@ from video_app.api.services import convert_resolution
 
 @job
 def convert_to_hls(video_id, source_path):
+    "Background task to convert video to HLS format with multiple resolutions."
     try:
         video = Video.objects.get(id=video_id)
     except Video.DoesNotExist:

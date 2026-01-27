@@ -7,6 +7,7 @@ User = get_user_model()
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    """Handles user register, including password confirm and inactive account creation."""
     confirmed_password = serializers.CharField(write_only=True)
 
     class Meta:
@@ -33,6 +34,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(TokenObtainPairSerializer):
+    """Validates credentials and returns the JWT pair along with user details."""
+
     def validate(self, attrs):
         data = super().validate(attrs)
 

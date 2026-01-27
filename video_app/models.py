@@ -4,6 +4,9 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Video(models.Model):
+    """
+    Represents a video with metadata, raw file and HLS conversion status.
+    """
     class VideoCategory(models.TextChoices):
         DRAMA = "Drama", _("Drama")
         COMEDY = "comedy", _("Comedy")

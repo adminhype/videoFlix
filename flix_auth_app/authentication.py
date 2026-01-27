@@ -3,6 +3,8 @@ from rest_framework.exceptions import AuthenticationFailed
 
 
 class JWTCookieAuthentication(JWTAuthentication):
+    """Authenticates users via HTTP-only Cookies"""
+
     def authenticate(self, request):
         header_result = super().authenticate(request)
         if header_result is not None:

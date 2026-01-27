@@ -3,6 +3,7 @@ import subprocess
 
 
 def convert_resolution(source, base_dir, resu_name, scale, bitrate):
+    """ Executes FFmpeg to convert a video file to a specific resolution and bitrate"""
     output_dir = os.path.join(base_dir, resu_name)
     os.makedirs(output_dir, exist_ok=True)
     output_file = os.path.join(output_dir, "index.m3u8")

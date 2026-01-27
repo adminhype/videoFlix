@@ -27,6 +27,7 @@ User = get_user_model()
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def register_user(request):
+    """Registers a new user and triggers the activation email task"""
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
@@ -44,6 +45,7 @@ def register_user(request):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def activate_user(request, uidb64, token):
+    """Activates a user account if the provided token and UID are valid."""
     user = get_user_from_uid(uidb64)
     if user and default_token_generator.check_token(user, token):
         user.is_active = True
@@ -53,6 +55,7 @@ def activate_user(request, uidb64, token):
 
 
 class LoginView(TokenObtainPairView):
+    """Authenticates the user and sets JWT tokens in HTTP-only cookies."""
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
@@ -67,6 +70,7 @@ class LoginView(TokenObtainPairView):
 
 
 class LogoutView(APIView):
+    """Blacklists the refresh token and clears authentication cookies."""
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -85,6 +89,8 @@ class LogoutView(APIView):
 
 
 class CustomTokenRefreshView(TokenRefreshView):
+    """Refreshes the access token using the refresh token from the cookie."""
+
     def post(self, request, *args, **kwargs):
         refresh_token = request.COOKIES.get("refresh_token")
 
@@ -108,6 +114,7 @@ class CustomTokenRefreshView(TokenRefreshView):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def password_reset_request(request):
+    """Sends a password reset email if the user exists."""
     email = request.data.get("email")
     try:
         user = User.objects.get(email=request.data.get("email"))
@@ -122,6 +129,7 @@ def password_reset_request(request):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def password_reset_confirm(request, uidb64, token):
+    """Sets a new password for the user if the token is valid."""
     user = get_user_from_uid(uidb64)
 
     if not user or not default_token_generator.check_token(user, token):
