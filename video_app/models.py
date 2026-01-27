@@ -1,3 +1,4 @@
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -15,7 +16,12 @@ class Video(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=112)
     description = models.TextField(blank=True, null=True)
-    video_file = models.FileField(upload_to="videos/", blank=True, null=True)
+    video_file = models.FileField(
+        upload_to="videos/",
+        blank=True,
+        null=True,
+        validators=[FileExtensionValidator(allowed_extensions=["mp4", "avi", "mov", "mkv"])]
+    )
     thumbnail = models.ImageField(upload_to="thumbnails/", blank=True, null=True)
     category = models.CharField(
         max_length=55,

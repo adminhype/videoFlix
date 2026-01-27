@@ -141,7 +141,8 @@ EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False') == 'True'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+_from_email_adress = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@videoflix.com')
+DEFAULT_FROM_EMAIL = f"VideoFlix Team <{_from_email_adress}>"
 
 
 # Password validation

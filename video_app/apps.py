@@ -6,4 +6,4 @@ class VideoAppConfig(AppConfig):
     name = 'video_app'
 
     def ready(self):
-        import video_app.signals
+        import video_app.signals  # noqa
