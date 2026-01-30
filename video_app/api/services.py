@@ -23,5 +23,16 @@ def convert_resolution(source, base_dir, resu_name, scale, bitrate):
         '-hls_list_size', '0',
         '-f', 'hls', output_file
     ]
-
     subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
+def capture_frame(source, output_path):
+    """Extracts a single frame from a video at the 1 second mark."""
+    cmd = [
+        'ffmpeg',
+        '-i', source,
+        '-ss', '00:00:01.000',
+        '-vframes', '1',
+        output_path
+    ]
+    subprocess.run(cmd, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

@@ -1,10 +1,11 @@
 import os
 
 from django.conf import settings
+from django.core.files import File
 from django_rq import job
 
 from .models import Video
-from video_app.api.services import convert_resolution
+from video_app.api.services import convert_resolution, capture_frame
 
 
 @job
@@ -18,8 +19,9 @@ def convert_to_hls(video_id, source_path):
     base_dir = os.path.join(settings.MEDIA_ROOT, 'hls', str(video_id))
     os.makedirs(base_dir, exist_ok=True)
 
-    convert_resolution(source_path, base_dir, "480p", "-2:480", "800k")
+    generate_thumbail(video, source_path, base_dir)
 
+    convert_resolution(source_path, base_dir, "480p", "-2:480", "800k")
     convert_resolution(source_path, base_dir, "720p", "-2:720", "1500k")
     video.has_720p = True
 
@@ -27,3 +29,15 @@ def convert_to_hls(video_id, source_path):
     video.has_1080p = True
 
     video.save()
+
+
+def generate_thumbail(video, source_path, base_dir):
+    """Generates and saves a thumbnail if none exists."""
+    if not video.thumbnail:
+        thumb_path = os.path.join(base_dir, f"{video.id}_thumbnail.jpg")
+        capture_frame(source_path, thumb_path)
+
+        if os.path.exists(thumb_path):
+            with open(thumb_path, "rb") as thumb_file:
+                video.thumbnail.save(f"{video.id}.jpg", File(thumb_file), save=False)
+            os.remove(thumb_path)
