@@ -58,33 +58,61 @@ The following tools are required to run the application:
 
 The project is fully containerized. Follow these steps to start the development environment:
 
-1.  **Clone the Repository**
+1. **Clone the Repository**
+    
     ```bash
     git clone <repository-url>
     cd videoflix.backend
+    
     ```
-
-2.  **Configure Environment Variables**
-    Create a `.env` file based on the template:
+    
+2. **Create a Virtual Environment (Recommended)**
+While the application runs in Docker, a local virtual environment is recommended for IDE support (autocompletion, linting).
+    
+    ```bash
+    # Create virtual environment
+    python -m venv .venv
+    
+    # Activate virtual environment
+    # Windows:
+    .venv/Scripts/activate
+    # Mac/Linux:
+    source .venv/bin/activate
+    
+    # Install dependencies locally
+    pip install -r requirements.txt
+    
+    ```
+    
+3. **Configure Environment Variables**
+Create a `.env` file based on the template:
+    
     ```bash
     cp .env.template .env
+    
     ```
+    
     Adjust the values in the `.env` file as needed (particularly email configuration for sending activation links).
-
-3.  **Build and Start Containers**
+    
+4. **Build and Start Containers**
+    
     ```bash
     docker compose up --build
+    
     ```
+    
     The server will be accessible at `http://localhost:8000`.
-
-4.  **Database Migrations**
-    Migrations are automatically executed by the entrypoint script upon startup. If manual migrations are necessary:
+    
+5. **Database Migrations**
+Migrations are automatically executed by the entrypoint script upon startup. If manual migrations are necessary:
+    
     ```bash
     docker compose exec web python manage.py migrate
+    
     ```
-
-5.  **Create Superuser**
-    A superuser is automatically created based on the environment variables (Default: admin / adminpassword).
+    
+6. **Create Superuser**
+A superuser is automatically created based on the environment variables (Default: admin / adminpassword).
 
 ## 6. Configuration
 

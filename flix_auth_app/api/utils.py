@@ -2,6 +2,7 @@ from django.conf import settings
 
 
 def set_token_cookies(response, access_token, refresh_token):
+    """Sets HTTP only cookies for access and refresh tokens."""
     cookie_params = {
         "httponly": True,
         "secure": not settings.DEBUG,
@@ -15,6 +16,7 @@ def set_token_cookies(response, access_token, refresh_token):
 
 
 def clear_token_cookies(response):
+    """Removes auth cookies cookies from response."""
     response.delete_cookie("access_token")
     response.delete_cookie("refresh_token")
     return response

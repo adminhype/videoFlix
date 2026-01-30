@@ -50,6 +50,7 @@ class LoginSerializer(TokenObtainPairSerializer):
 
 
 class PasswordResetConfirmSerializer(serializers.Serializer):
+    """Validate the new password input during the reset process."""
     new_password = serializers.CharField(write_only=True)
     confirm_password = serializers.CharField(write_only=True)
 

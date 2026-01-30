@@ -4,6 +4,7 @@ from video_app.models import Video
 
 
 class VideoSerializer(serializers.ModelSerializer):
+    """Serialize video metadata for the dashboard, including thumbnail URL."""
     thumbnail_url = serializers.ImageField(source='thumbnail', read_only=True)
 
     class Meta:
