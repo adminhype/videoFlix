@@ -2,27 +2,29 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>
       {% block subject %}
         Videoflix Notification
       {% endblock %}
     </title>
-    {% include "emails/styles.css" %}
+    {% include 'emails/styles.css' %}
   </head>
 
-  {% comment %}replace text with logo later{% endcomment %}
   <body>
-    <div class="container">
-      <div class="logo-header">
-        <h1 class="logo-text">Videoflix</h1>
-      </div>
+    <div style="background: #f4f4f4; width: 100%; height: 100%;">
+      <div class="container">
+        <div class="logo-header">
+          <h1 class="logo-text">Videoflix</h1>
+        </div>
 
-      {% block content %}
+        {% block content %}
 
-      {% endblock %}
-  {% comment %} maybe contact info {% endcomment %}
-      <div class="footer">
-        <p class="copyrights">&copy; 2026 dev@ademoencue.de</p>
+        {% endblock %}
+        <div class="footer">
+          <p class="copyrights">&copy; 2026 dev@ademoencue.de</p>
+        </div>
       </div>
     </div>
   </body>

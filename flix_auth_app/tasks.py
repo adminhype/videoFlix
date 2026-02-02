@@ -4,6 +4,8 @@ from django_rq import job
 from django.utils.html import strip_tags
 from django.template.loader import render_to_string
 
+from premailer import transform
+
 
 @job
 def send_activation_email(email, uid, token):
@@ -14,8 +16,9 @@ def send_activation_email(email, uid, token):
         "link": activation_link,
         "username": email.split("@")[0]
     }
-    html_content = render_to_string("emails/activation_email.html", context)
-    text_content = strip_tags(html_content)
+    html_content_raw = render_to_string("emails/activation_email.html", context)
+    html_content = transform(html_content_raw)
+    text_content = strip_tags(html_content_raw)
 
     email_msg = EmailMultiAlternatives(
         subject,
@@ -34,9 +37,11 @@ def send_password_reset_email(email, uid, token):
     reset_link = f"http://127.0.0.1:5500/pages/auth/confirm_password.html?uid={uid}&token={token}"
     context = {
         "link": reset_link,
+        "username": email.split("@")[0]
     }
-    html_content = render_to_string("emails/password_reset_email.html", context)
-    text_content = strip_tags(html_content)
+    html_content_raw = render_to_string("emails/password_reset_email.html", context)
+    html_content = transform(html_content_raw)
+    text_content = strip_tags(html_content_raw)
 
     email_msg = EmailMultiAlternatives(
         subject,

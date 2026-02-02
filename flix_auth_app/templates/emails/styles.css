@@ -1,16 +1,19 @@
 <style>
     body {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        background-color: #f4f4f4;
+        background: #f4f4f4;
+        box-sizing: border-box;
+        width: 100%;
         margin: 0;
         padding: 0;
     }
 
     .container {
+        width: 100%; 
         max-width: 600px;
-        margin: 20px auto;
-        background-color: #ffffff;
-        padding: 40px;
+        margin: 0 auto;
+        background: #ffffff;
+        padding: 30px; 
         border-radius: 8px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
@@ -26,7 +29,8 @@
         font-size: 16px;
         margin-bottom: 20px;
     }
-    .greeting{
+
+    .greeting {
         color: #0045ff;
     }
 
@@ -36,18 +40,19 @@
     }
 
     .btn {
-        background-color: #0045ff;
+        background: #0045ff;
         color: #ffffff; 
         padding: 14px 28px;
-        text-decoration: none;
         border-radius: 4px;
         font-weight: bold;
-        display: inline-block;
         font-size: 16px;
+        display: inline-block;        
+        white-space: nowrap; 
+        text-decoration: none;
     }
-
+    
     .btn:hover {
-        background-color: #0033cc;
+        background: #0033cc;
     }
 
     .logo-header {
@@ -66,13 +71,13 @@
         margin-top: 40px;
         border-top: 1px solid #eeeeee;
         padding-top: 20px;
-        font-size: 18px;
+        font-size: 14px;
         color: #999999;
         text-align: center;
     }
 
-    .copyrights{
-        font-size: 26px;
+    .copyrights {
+        font-size: 14px;
     }
 
     .small-note {
