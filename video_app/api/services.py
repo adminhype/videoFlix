@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 
@@ -21,9 +22,11 @@ def convert_resolution(source, base_dir, resu_name, scale, bitrate):
         '-start_number', '0',
         '-hls_time', '10',
         '-hls_list_size', '0',
-        '-f', 'hls', output_file
+        '-pix_fmt', 'yuv420p',
+        '-f', 'hls',
+        output_file
     ]
-    subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL)
 
 
 def capture_frame(source, output_path):
@@ -31,8 +34,27 @@ def capture_frame(source, output_path):
     cmd = [
         'ffmpeg',
         '-i', source,
-        '-ss', '00:00:01.000',
+        '-ss', '00:00:01',
         '-vframes', '1',
+        '-q:v', '2',
         output_path
     ]
-    subprocess.run(cmd, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
+def get_video_height(source_path):
+    """reads the height of a video file using FFprobe."""
+    cmd = [
+        'ffprobe',
+        '-v', 'error',
+        '-select_streams', 'v:0',
+        '-show_entries', 'stream=height',
+        '-of', 'json',
+        source_path
+    ]
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        data = json.loads(result.stdout)
+        return int(data['streams'][0]['height'])
+    except (KeyError, IndexError, ValueError, subprocess.CalledProcessError):
+        return 0
